@@ -1,0 +1,52 @@
+name: Test and publish Korb
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Configure project path
+        shell: bash
+        run: |
+          repo_name="${GITHUB_REPOSITORY##*/}"
+          case "$repo_name" in
+            *.github.io) app_base="/" ;;
+            *) app_base="/$repo_name/" ;;
+          esac
+          printf 'VITE_BASE_PATH=%s\n' "$app_base" >> "$GITHUB_ENV"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+      - run: npm run test:e2e
+        env:
+          CHROMIUM_PATH: playwright
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4
