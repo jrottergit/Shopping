@@ -12,7 +12,7 @@ async function gestureDrag(
   handle: Locator,
   target: () => Locator,
   touch: boolean,
-  pauseAtTarget = 0,
+  waitAtTarget?: () => Promise<void>,
 ) {
   const box = (await handle.boundingBox())!;
   const start = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
@@ -25,6 +25,7 @@ async function gestureDrag(
     await page.mouse.down();
     await page.mouse.move(start.x + 8, start.y, { steps: 3 });
   }
+  await expect(handle).toHaveAttribute('aria-pressed', 'true');
   await expect(target()).toBeVisible();
   const destination = (await target().boundingBox())!;
   const end = {
@@ -40,7 +41,7 @@ async function gestureDrag(
       await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [point] });
     else await page.mouse.move(point.x, point.y);
   }
-  if (pauseAtTarget) await page.waitForTimeout(pauseAtTarget);
+  if (waitAtTarget) await waitAtTarget();
   if (cdp) {
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
     await cdp.detach();
@@ -158,36 +159,12 @@ test('Offline-Kaltstart erhält Daten und erlaubt neue Artikel', async ({ page, 
 test('Drag & Drop verschiebt Artikel in eine leere Kategorie', async ({ page }, info) => {
   await add(page, 'Tomaten');
   await add(page, 'Zwiebeln');
-  const handle = page.getByRole('button', { name: 'Tomaten verschieben', exact: true });
-  const box = (await handle.boundingBox())!;
-  const start = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
-  const touch = info.project.name === 'mobile-touch';
-  const cdp = touch ? await page.context().newCDPSession(page) : undefined;
-  if (cdp) {
-    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [start] });
-    await page.waitForTimeout(240);
-  } else {
-    await page.mouse.move(start.x, start.y);
-    await page.mouse.down();
-    await page.mouse.move(start.x + 8, start.y, { steps: 3 });
-  }
-  const destination = page.locator('.category-heading').filter({ hasText: 'Obst & Gemüse' });
-  await expect(destination).toBeVisible();
-  const target = (await destination.boundingBox())!;
-  const end = { x: target.x + target.width / 2, y: target.y + target.height / 2 };
-  for (let step = 1; step <= 12; step++) {
-    const position = {
-      x: start.x + ((end.x - start.x) * step) / 12,
-      y: start.y + ((end.y - start.y) * step) / 12,
-    };
-    if (cdp)
-      await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [position] });
-    else await page.mouse.move(position.x, position.y);
-  }
-  if (cdp) {
-    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
-    await cdp.detach();
-  } else await page.mouse.up();
+  await gestureDrag(
+    page,
+    page.getByRole('button', { name: 'Tomaten verschieben', exact: true }),
+    () => page.locator('.category-heading').filter({ hasText: 'Obst & Gemüse' }),
+    info.project.name === 'mobile-touch',
+  );
   const category = page
     .locator('.category-section')
     .filter({ has: page.locator('.category-title').filter({ hasText: 'Obst & Gemüse' }) });
@@ -255,13 +232,17 @@ test('Zugeklappte Kategorien öffnen sich beim Ziehen', async ({ page }, info) =
   await page.getByLabel('Kategorie', { exact: true }).selectOption({ label: 'Obst & Gemüse' });
   await page.getByRole('button', { name: 'Änderungen speichern', exact: true }).click();
   await add(page, 'Tomaten');
-  await page.getByRole('button', { name: 'Obst & Gemüse 1', exact: true }).click();
+  const categoryToggle = page.getByRole('button', { name: 'Obst & Gemüse 1', exact: true });
+  await categoryToggle.click();
+  await expect(categoryToggle).toHaveAttribute('aria-expanded', 'false');
   await gestureDrag(
     page,
     page.getByRole('button', { name: 'Tomaten verschieben', exact: true }),
     () => page.locator('.category-heading').filter({ hasText: 'Obst & Gemüse' }),
     info.project.name === 'mobile-touch',
-    600,
+    async () => {
+      await expect(categoryToggle).toHaveAttribute('aria-expanded', 'true');
+    },
   );
   const category = page
     .locator('.category-section')

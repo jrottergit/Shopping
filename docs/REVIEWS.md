@@ -1,8 +1,8 @@
 # Umsetzungsreviews – Version 0.1
 
-Die Reviews begleiten die Umsetzung in einzelnen Abschnitten. Alle aufgeführten
-automatisierten Ergebnisse stammen aus der Entwicklungsumgebung. GitHub-Workflows
-sind vorbereitet, aber noch nicht im entfernten Repository ausgeführt.
+Die Reviews begleiten die Umsetzung in einzelnen Abschnitten. Die automatisierten
+Ergebnisse unten stammen aus der Entwicklungsumgebung. Der erste GitHub-Lauf und
+die Vorbereitung der Veröffentlichung sind zusätzlich in Review 4 dokumentiert.
 
 ## Review 1: Daten und Einkaufslisten
 
@@ -72,11 +72,31 @@ Zusätzlich prüfen wir bei Änderungen an Mengen die Herkunft und Summen; bei
 Speicheränderungen Sicherungs-Rundlauf und Migration; bei Gestenänderungen
 Scrollen, leere Ziele, zugeklappte Kategorien und gespeicherte Reihenfolge.
 
+## Review 4: Veröffentlichung auf GitHub
+
+Der vollständige App-Code liegt auf `main` in `jrottergit/Shopping`.
+Im ersten GitHub-Lauf bestanden Formatierung, alle 25 Fach- und Speichertests
+und der Produktionsbuild. Von 20 Browserprüfungen bestanden 19; der mobile Test
+für das Öffnen zugeklappter Kategorien schlug fehl.
+
+Der Test wartete nach dem Schließen und beim Start der Ziehgeste auf feste
+Zeitspannen. Er prüft jetzt den abgeschlossenen Zustandswechsel, die aktive
+Ziehgeste und das Öffnen der Zielkategorie vor dem Loslassen. Die Touch-Prüfung
+bestand anschließend fünfmal in Folge in der Entwicklungsumgebung; danach
+bestanden alle 20 Browserprüfungen unter `/Shopping/`.
+
+Die administrative Änderung der Repository-Sichtbarkeit ist aus dieser Umgebung
+mit HTTP 403 gesperrt. Der Eigentümer muss unter **Settings → General → Danger Zone**
+die Sichtbarkeit auf **Public** und unter **Settings → Pages** die Quelle auf
+**GitHub Actions** stellen. Der Workflow prüft die App vollständig vor dem Deployment.
+Den aktuellen Stand zeigt
+[GitHub Actions](https://github.com/jrottergit/Shopping/actions/workflows/pages.yml).
+
 ## Noch ausstehend
 
 - Prüfung auf einem echten iPhone mit Safari und installierter Home-Bildschirm-App:
   Tastatur, Randscrollen, VoiceOver, Fingerbedienung und Offline-Neustart.
-- Ausführung des GitHub-Workflows und Prüfung der tatsächlichen veröffentlichten URL.
+- Erfolgreiches GitHub-Pages-Deployment und Prüfung der tatsächlichen veröffentlichten URL.
 - Ein vollständiger Update-Wechsel zwischen zwei veröffentlichten App-Versionen
   auf dem iPhone. Die Trennung von Offline-Cache und Nutzerdaten ist bereits vorhanden.
 
