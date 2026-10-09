@@ -4,6 +4,9 @@ Eine lokale, installierbare iPhone-Webapp mit mehreren Einkaufslisten,
 manuell gepflegten Rezepten, Portionsberechnung und Drag & Drop.
 Die erste Version benötigt keine Anmeldung und keinen Backend-Dienst.
 
+**App öffnen:** [Korb auf dem iPhone](https://jrottergit.github.io/Shopping/).
+In Safari öffnen und über **Teilen → Zum Home-Bildschirm** hinzufügen.
+
 ## Lokal starten
 
 Benötigt Node.js 22.12+ oder Node.js 24. Getestet mit Node.js 24.

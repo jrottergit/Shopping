@@ -85,18 +85,31 @@ Ziehgeste und das Öffnen der Zielkategorie vor dem Loslassen. Die Touch-Prüfun
 bestand anschließend fünfmal in Folge in der Entwicklungsumgebung; danach
 bestanden alle 20 Browserprüfungen unter `/Shopping/`.
 
-Die administrative Änderung der Repository-Sichtbarkeit ist aus dieser Umgebung
-mit HTTP 403 gesperrt. Der Eigentümer muss unter **Settings → General → Danger Zone**
-die Sichtbarkeit auf **Public** und unter **Settings → Pages** die Quelle auf
-**GitHub Actions** stellen. Der Workflow prüft die App vollständig vor dem Deployment.
+Die administrative Änderung der Repository-Sichtbarkeit war aus dieser Umgebung
+mit HTTP 403 gesperrt. Der Eigentümer hat das Repository öffentlich gestellt und
+GitHub Pages mit der Quelle **GitHub Actions** aktiviert.
+Der Workflow prüft die App vollständig vor dem Deployment.
 Den aktuellen Stand zeigt
 [GitHub Actions](https://github.com/jrottergit/Shopping/actions/workflows/pages.yml).
+
+## Review 5: Erfolgreiche Veröffentlichung am 9. Oktober 2026
+
+Der erneut gestartete Workflow bestand Formatierung, alle 25 Fach- und Speichertests,
+Produktionsbuild und alle 20 Browserprüfungen. Konfiguration, Upload und Deployment
+von GitHub Pages waren erfolgreich. GitHub meldet als veröffentlichte Adresse
+[Korb](https://jrottergit.github.io/Shopping/).
+
+Die ausgelieferte App basiert auf Commit `2e1cd19`. Der direkte HTTP-Abruf dieser
+Domain ist in der Entwicklungsumgebung durch die Netzwerkregel mit HTTP 403
+gesperrt; auch das Web-Lesewerkzeug konnte die Adresse nicht öffnen.
+Die Veröffentlichung ist durch den erfolgreichen GitHub-Deployment-Lauf bestätigt.
+Ein vollständiger Test auf dem echten iPhone bleibt Teil der Geräteabnahme.
 
 ## Noch ausstehend
 
 - Prüfung auf einem echten iPhone mit Safari und installierter Home-Bildschirm-App:
   Tastatur, Randscrollen, VoiceOver, Fingerbedienung und Offline-Neustart.
-- Erfolgreiches GitHub-Pages-Deployment und Prüfung der tatsächlichen veröffentlichten URL.
+- Öffnen der veröffentlichten Adresse in Safari auf dem iPhone.
 - Ein vollständiger Update-Wechsel zwischen zwei veröffentlichten App-Versionen
   auf dem iPhone. Die Trennung von Offline-Cache und Nutzerdaten ist bereits vorhanden.
 
