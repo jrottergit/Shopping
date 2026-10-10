@@ -19,7 +19,6 @@ import {
   Pencil,
   RefreshCw,
   X,
-  Leaf,
 } from 'lucide-react';
 import { db, change, backupText, readBackup, restore } from './db';
 import { type AppState, type Recipe, type Batch, type ShoppingList } from './model';
@@ -207,10 +206,6 @@ export default function App() {
             </span>
           </a>
           <div className="header-right">
-            <span className="header-tagline">
-              <Leaf size={14} />
-              Einfach gut einkaufen.
-            </span>
             <button
               className="icon-button settings-button"
               aria-label="Einstellungen"

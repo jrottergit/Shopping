@@ -200,13 +200,6 @@ small,
   align-items: center;
   gap: 18px;
 }
-.header-tagline {
-  display: flex;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--muted);
-  align-items: center;
-}
 .icon-button {
   border: 0;
   border-radius: 12px;
@@ -1505,9 +1498,6 @@ small,
   .app-header {
     padding: calc(19px + env(safe-area-inset-top)) 23px 18px;
     height: calc(83px + env(safe-area-inset-top));
-  }
-  .header-tagline {
-    display: none;
   }
   .brand {
     font-size: 25px;
